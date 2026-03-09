@@ -43,7 +43,17 @@ Other driver/CUDA versions or GPU models may work but have not been tested.
 
 ## Quick Start
 
-### Step 1 — Download Datasets and Model Checkpoints
+### Step 1 — Build the Docker Image
+
+```bash
+docker build -t beamformer-docker .
+```
+
+The image is based on `huggingface/accelerate:gpu-nightly` and installs all required Python dependencies listed in [requirements.txt](requirements.txt).
+
+> **Note:** Build the Docker image **before** running `prepare_files.sh`. The large dataset and model files downloaded by `prepare_files.sh` would otherwise be copied into the Docker build context, significantly slowing down the build.
+
+### Step 2 — Download Datasets and Model Checkpoints
 
 ```bash
 bash prepare_files.sh
@@ -56,14 +66,6 @@ This script downloads and extracts the following archives from the artifact repo
 | `csi-dataset.tar.gz` | CSI measurement dataset |
 | `saved_models.tar.gz` | Pre-trained BeamFormer model weights |
 | `ARN_saved_models.tar.gz` | Pre-trained ARN baseline model weights |
-
-### Step 2 — Build the Docker Image
-
-```bash
-docker build -t beamformer-docker .
-```
-
-The image is based on `huggingface/accelerate:gpu-nightly` and installs all required Python dependencies listed in [requirements.txt](requirements.txt).
 
 ### Step 3 — Run the Artifact
 
