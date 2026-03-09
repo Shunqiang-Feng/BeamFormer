@@ -64,8 +64,8 @@ This script downloads and extracts the following archives from the artifact repo
 | Archive | Contents |
 |---|---|
 | `csi-dataset.tar.gz` | CSI measurement dataset |
-| `saved_models.tar.gz` | Pre-trained BeamFormer model weights |
-| `ARN_saved_models.tar.gz` | Pre-trained ARN baseline model weights |
+| `saved_models.tar.gz` | Pre-trained model weights of **Beam Generator, Beam Pattern Encoder & Latent Beam Processor** |
+| `ARN_saved_models.tar.gz` | Pre-trained **Beam Power Estimator** model weights |
 
 ### Step 3 — Run the Artifact
 
