@@ -4,7 +4,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch.optim.lr_scheduler import LambdaLR
 import torch.nn.init as init
-from perceiver_pytorch import PerceiverIO
+from .perceiver_io import PerceiverIO
 
 
     

@@ -4,7 +4,6 @@ einops==0.8.2
 # matplotlib==3.10.8
 # numpy==2.4.2
 # pandas==3.0.1
-perceiver_pytorch==0.8.8
 # PyYAML==6.0.3
 # rich==14.3.3
 scipy>=1.10.1
