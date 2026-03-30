@@ -109,6 +109,15 @@ bash run_reproduce_figures.sh --data_source from_scratch
 
 ---
 
+## Dataset and Data Processing
+
+The complete dataset used in this artifact is publicly available at:
+
+- **Dataset:** [IEEE DataPort — 10.21227/g1zj-z323](https://ieee-dataport.org/documents/beamformer-ray-tracing-channel-dataset)
+- **Data Processing Code:** [https://github.com/Shunqiang-Feng/BeamFormer-Dataset](https://github.com/Shunqiang-Feng/BeamFormer-Dataset)
+
+---
+
 ## Note on Latency Results (Figure 16)
 
 The absolute latency values reported in Figure 16 are hardware-dependent and may differ across machines. However, the **relative ordering and trends** among the compared methods are expected to remain consistent regardless of the specific device used.
