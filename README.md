@@ -113,7 +113,7 @@ bash run_reproduce_figures.sh --data_source from_scratch
 
 The complete dataset used in this artifact is publicly available at:
 
-- **Dataset:** [IEEE DataPort — 10.21227/g1zj-z323](https://ieee-dataport.org/documents/beamformer-ray-tracing-channel-dataset)
+- **Dataset:** [IEEE DataPort — 10.21227/g1zj-z323](https://ieee-dataport.org/documents/beamformer-ray-tracing-channel-dataset) | [S3 Storage](https://s3-west.nrp-nautilus.io/BeamFormer/dataset/homeoffice-communication-28G-raw-data.zip)
 - **Data Processing Code:** [https://github.com/Shunqiang-Feng/BeamFormer-Dataset](https://github.com/Shunqiang-Feng/BeamFormer-Dataset)
 
 ---
