@@ -7,3 +7,19 @@ csi-dataset/
 ae_figures/
 
 test.sh
+
+cache/
+
+eval_results/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Demo data
+mini_demo/
+
+claude_plan/
+
+.eval_tmp_folder/
