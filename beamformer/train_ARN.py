@@ -49,13 +49,11 @@ class Trainer(Trainer_basic):
             raise FileExistsError("You Use An Existing Folder as Save Path")
         
         generator = self.initialize_generator()
-        if self.is_generator_ml():
-            generator = generator.to(self.device)
+        generator = generator.to(self.device)
         arn_model = self.init_arn()
 
         arn_model.train()
-        if self.is_generator_ml():
-            generator.eval()
+        generator.eval()
 
         optimizer = torch.optim.AdamW(
             arn_model.parameters(), lr=self.config.training.learning_rate, weight_decay=0.01
