@@ -7,4 +7,4 @@ RUN conda run -n accelerate pip install --no-cache-dir -r requirements.txt
 
 RUN chmod +x run_reproduce_figures.sh
 
-CMD ["conda", "run", "--no-capture-output", "-n", "accelerate", "bash", "run_reproduce_figures.sh", "--data_source", "from_scratch"]
+CMD ["conda", "run", "--no-capture-output", "-n", "accelerate", "python", "-m", "beamformer.cdf_plot"]

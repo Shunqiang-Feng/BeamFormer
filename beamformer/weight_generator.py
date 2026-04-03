@@ -2,7 +2,6 @@ import torch
 import torch.nn as nn
 from .utils import antenna_info, get_uniform_samples
 import numpy as np
-import torch.nn.init as init
 
 
 def transform_weights(B):

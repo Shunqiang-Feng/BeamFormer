@@ -1,147 +1,116 @@
-# BeamFormer — Artifact Evaluation
+# BeamFormer: Transformer-based Beam Management for 6G Networks
 
-This repository contains the artifact for reproducing the experimental results and figures presented in the paper. Follow the steps below to set up the environment and reproduce all results.
+> **BeamFormer** is a transformer-based framework for beam management in gMIMO 6G networks. It reconstructs the full beam spectrum (RSS across all beam directions) from a small number of reference beam measurements, achieving real-time beam alignment with 1.8 ms inference latency for 1,600 beams.
 
----
-
-## Requirements
-
-**Hardware**
-
-| Component | Requirement |
-|---|---|
-| GPU VRAM | >= 20 GB |
-| Disk Space | ~34 GB (for downloaded archives and extracted data) |
-
-**Tested Configurations**
-
-The artifact has been verified on the following GPU configurations:
-
-| GPU | VRAM | NVIDIA Driver | CUDA (Host) |
-|---|---|---|---|
-| NVIDIA RTX 4000 Ada Generation | 20 GB | 573.44 | 12.8 |
-| NVIDIA A40 | 46 GB | 580.95.05 | 13.0 |
-
-Other driver/CUDA versions or GPU models may work but have not been tested.
-
-**Software**
-
-| Component | Requirement |
-|---|---|
-| Docker | with `--gpus all` support |
-
-
-**Estimated Runtimes**
-
-| Task | Estimated Time |
-|---|---|
-| `prepare_files.sh` (download ~33.6 GiB) | Depends on network bandwidth |
-| Full artifact reproduction (`from_scratch`) | ~2–3 hours |
-| 2ACE baseline from scratch (compressed sensing) | > 12 hours (see note below) |
+Paper: *BeamFormer: Transformer-based Beam Management for 6G Networks*, MobiSys 2026 (link TBD)
 
 ---
 
 ## Quick Start
 
-### Step 1 — Build the Docker Image
+### 1. Set up the environment
 
 ```bash
-docker build -t beamformer-docker .
+conda create -n beamformer python=3.12 -y
+conda activate beamformer
+pip install -r requirements.txt
 ```
 
-The image is based on `huggingface/accelerate:gpu-nightly` and installs all required Python dependencies listed in [requirements.txt](requirements.txt).
-
-> **Note:** Build the Docker image **before** running `prepare_files.sh`. The large dataset and model files downloaded by `prepare_files.sh` would otherwise be copied into the Docker build context, significantly slowing down the build.
-
-### Step 2 — Download Datasets and Model Checkpoints
+### 2. Download the dataset and pre-trained models
 
 ```bash
 bash prepare_files.sh
 ```
 
-This script downloads and extracts the following archives from the artifact repository:
+This downloads and extracts `mini_demo.zip` into `./mini_demo/`, which contains example CSI data and pre-trained model weights.
 
-| Archive | Contents |
+### 3. Visualize beam spectra
+
+```bash
+python -m beamformer.visualize_spectrum
+```
+
+Output: `figures/spectrum_grid.png`
+
+---
+
+## Results
+
+### Angle Spectrum Visualization
+
+Ground truth vs. predicted beam spectra across 32 random CSI samples (polar disk plots, sin-projection):
+
+```bash
+python -m beamformer.visualize_spectrum
+```
+
+![Spectrum Grid](figures/spectrum_grid.png)
+
+### CDF Comparison
+
+BeamFormer vs. baselines (AgileLink, Coarse/Fine Sweep, Hier. Sweep, 2ACE, MLP, CNN) on the full test set:
+
+```bash
+python -m beamformer.cdf_plot
+```
+
+![CDF Comparison](figures/cdf_comparison.png)
+
+---
+
+## Dataset
+
+The full training dataset is publicly available:
+
+- **IEEE DataPort**: [10.21227/g1zj-z323](https://ieee-dataport.org/documents/beamformer-ray-tracing-channel-dataset)
+- **S3**: `https://s3-west.nrp-nautilus.io/BeamFormer/dataset/homeoffice-communication-28G-raw-data.zip`
+- **Data processing code**: [github.com/Shunqiang-Feng/BeamFormer-Dataset](https://github.com/Shunqiang-Feng/BeamFormer-Dataset)
+
+---
+
+## Training Your Own Model
+
+### Configuration
+
+Edit the config files in [`configs/`](configs/) to match your hardware and dataset paths:
+
+| File | Purpose |
 |---|---|
-| `csi-dataset.tar.gz` | CSI measurement dataset |
-| `saved_models.tar.gz` | Pre-trained model weights of **Beam Generator, Beam Pattern Encoder & Latent Beam Processor** |
-| `ARN_saved_models.tar.gz` | Pre-trained **Beam Power Estimator** model weights |
+| [`configs/co_train.py`](configs/co_train.py) | Beam Generator + Latent Beam Processor |
+| [`configs/arn.py`](configs/arn.py) |  Beam Power Estimator (ARN) |
+| [`configs/submodules.py`](configs/submodules.py) | Shared component definitions (model architecture, dataset) |
 
-### Step 3 — Run the Artifact
+Key parameters to adjust in `configs/submodules.py`:
+- `dataset.homeoffice_communication_28g()` — update `train_data_path` and `test_data_path`
+- `estimator.PerceiverIO(depth=..., dim=...)` — model capacity
+- `training.co_train(...)` — batch size, epochs, learning rates, GPU count
 
-```bash
-bash run_docker.sh
-```
-
-The container mounts the local dataset and model directories into `/app` and internally executes `run_reproduce_figures.sh --data_source from_scratch`, which reproduces **all figures from the paper** in a single run. Upon completion, all generated figures are saved to `./ae_figures/` on the host machine. No further steps are required for the main evaluation.
-
----
-
-## Reproducing Figures
-
-Inside the container (or in a local environment), figures can be reproduced individually via:
+### Stage 1 & 2 — Beam Generator + Latent Beam Processor (co-training)
 
 ```bash
-python reproduce_figures.py --figure "<figure_name>" --data_source [cache|from_scratch]
+accelerate launch beamformer/train.py --config co_train
 ```
 
-The following figures are supported:
+Model weights are saved to `saved_models/co_train/`.
 
-| Figure | Description |
-|---|---|
-| Overall performance of different approaches | Figure 10 |
-| Visualization of layer-wise beam spectrum generation | Figure 11 |
-| Impact of scene configurations | Figure 13 |
-| Impact of model parameters | Figure 14 |
-| Comparison of positional encoders | Figure 15 |
-| Comparison of model latencies | Figure 16 |
-| Comparison of reference beam settings | Figure 17 |
-| Comparison of power estimators | Figure 18 |
-| Performance with real-world data | Figure 19 |
-| Example spectrum with Sivers SDR | Figure 20 |
-| Example spectrum with IBM SDR | Figure 20 |
+### Stage 3 — Beam Power Estimator (ARN)
 
-To reproduce all figures at once, use:
+Update `generator_pretrained_model` in `configs/arn.py` to point to the Stage 2 generator weights, then:
 
 ```bash
-bash run_reproduce_figures.sh --data_source from_scratch
+accelerate launch beamformer/train_ARN.py --config arn
 ```
 
----
-
-## Dataset and Data Processing
-
-The complete dataset used in this artifact is publicly available at:
-
-- **Dataset:** [IEEE DataPort — 10.21227/g1zj-z323](https://ieee-dataport.org/documents/beamformer-ray-tracing-channel-dataset) | [S3 Storage](https://s3-west.nrp-nautilus.io/BeamFormer/dataset/homeoffice-communication-28G-raw-data.zip)
-- **Data Processing Code:** [https://github.com/Shunqiang-Feng/BeamFormer-Dataset](https://github.com/Shunqiang-Feng/BeamFormer-Dataset)
+Model weights are saved to `ARN_saved_models/arn/`.
 
 ---
 
-## Note on Latency Results (Figure 16)
+## Deployment
 
-The absolute latency values reported in Figure 16 are hardware-dependent and may differ across machines. However, the **relative ordering and trends** among the compared methods are expected to remain consistent regardless of the specific device used.
+At inference time, the base station:
 
----
+1. Uses the trained Beam Generator to generate reference beam weight.
+2. Measures RSS for each reference beam.
+3. Feeds the RSS into BeamFormer to reconstruct the full beam spectrum.
+4. Selects the beam direction with the highest predicted RSS for alignment.
 
-## Note on the 2ACE Baseline (Figure 10)
-
-The 2ACE baseline relies on MATLAB, which is proprietary software and requires a separate license. To avoid requiring reviewers to install MATLAB, pre-computed results for 2ACE are cached in `cache/2ACE/` and loaded automatically by default.
-
-> **Warning:** 2ACE is a compressed sensing algorithm with very high computational cost. Reproducing its results from scratch is expected to take **more than 12 hours**. We strongly recommend using the pre-cached results unless full verification is required.
-
-To reproduce the 2ACE results from scratch, follow these steps:
-
-1. Set up a local Python environment (see [requirements.txt](requirements.txt); **remove all `#` comment prefixes before installing**).
-2. Install the MATLAB Engine for Python by following the official guide:
-   [https://www.mathworks.com/help/matlab/matlab_external/install-the-matlab-engine-for-python.html](https://www.mathworks.com/help/matlab/matlab_external/install-the-matlab-engine-for-python.html)
-3. Delete the cached results directory:
-   ```bash
-   rm -rf cache/2ACE
-   ```
-4. Run the figure reproduction script with `from_scratch`:
-   ```bash
-   python reproduce_figures.py \
-       --figure "Overall performance of different approaches" \
-       --data_source from_scratch
-   ```

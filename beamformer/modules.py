@@ -41,62 +41,8 @@ def get_cosine_schedule_with_warmup(
 
     return LambdaLR(optimizer, lr_lambda, last_epoch)
 
-def get_step_lr_with_warmup(
-    optimizer: torch.optim.Optimizer,
-    num_warmup_steps: int,
-    num_training_steps: int,
-    last_epoch: int = -1
-):
-    """
-    Scheduler with:
-    - Linear warmup for `num_warmup_steps`
-    - Then StepLR: every 1/4 of remaining steps, lr decays by factor of 10
-    """
-    def lr_lambda(current_step):
-        if current_step < num_warmup_steps:
-            return float(current_step) / float(max(1, num_warmup_steps))
-        else:
-            # Remaining steps after warmup
-            remaining = num_training_steps - num_warmup_steps
-            step_in_decay = current_step - num_warmup_steps
-            decay_stage = step_in_decay * 6 // max(1, remaining)  # 0~3
-            return 1.0 / (10 ** decay_stage)
-
-    return LambdaLR(optimizer, lr_lambda, last_epoch) 
-
-def get_flat_cosine_schedule(
-    optimizer: torch.optim.Optimizer, 
-    num_training_steps: int, 
-    num_flat_steps: int, 
-    last_epoch: int = -1
-):
-
-    if num_flat_steps >= num_training_steps:
-        raise ValueError("num_flat_steps must be less than num_training_steps.")
-
-    def lr_lambda(current_step: int):
-        if current_step < num_flat_steps:
-            return 1.0
-
-        progress = float(current_step - num_flat_steps) / float(max(1, num_training_steps - num_flat_steps))
-        
-        return max(0.0, 0.5 * (1.0 + math.cos(math.pi * progress)))
-
-    return LambdaLR(optimizer, lr_lambda, last_epoch)
-
-def get_scheduler_by_type(scheduler_type, optimizer, warmup_steps, total_steps, flat_steps = 0, num_cycles=0.5, last_epoch: int = -1):
-    if scheduler_type == "cosine":
-        return get_cosine_schedule_with_warmup(optimizer, warmup_steps, total_steps, num_cycles=num_cycles, last_epoch = last_epoch)
-    elif scheduler_type == "step":
-        return get_step_lr_with_warmup(optimizer, warmup_steps, total_steps, last_epoch = last_epoch)
-    elif scheduler_type == "flat_cosine":
-        if flat_steps == 0:
-            flat_steps = total_steps // 2
-            print(f"Warning: flat_steps not provided for 'flat_cosine' scheduler. Defaulting to half of total_steps: {flat_steps}")
-        return get_flat_cosine_schedule(optimizer, total_steps, flat_steps, last_epoch=last_epoch)
-    
-    else:
-        raise ValueError(f"Unsupported scheduler type: {scheduler_type}")
+def get_scheduler_by_type(optimizer, warmup_steps, total_steps, num_cycles=0.5, last_epoch: int = -1):
+    return get_cosine_schedule_with_warmup(optimizer, warmup_steps, total_steps, num_cycles=num_cycles, last_epoch=last_epoch)
 
 
 class TransformerModel(nn.Module):
