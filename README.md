@@ -88,7 +88,7 @@ Key parameters to adjust in `configs/submodules.py`:
 ### Stage 1 & 2 — Beam Generator + Latent Beam Processor (co-training)
 
 ```bash
-accelerate launch beamformer/train.py --config co_train
+accelerate launch -m beamformer.train --config co_train
 ```
 
 Model weights are saved to `saved_models/co_train/`.
@@ -98,7 +98,7 @@ Model weights are saved to `saved_models/co_train/`.
 Update `generator_pretrained_model` in `configs/arn.py` to point to the Stage 2 generator weights, then:
 
 ```bash
-accelerate launch beamformer/train_ARN.py --config arn
+accelerate launch -m beamformer.train_ARN --config arn
 ```
 
 Model weights are saved to `ARN_saved_models/arn/`.

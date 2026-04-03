@@ -23,3 +23,5 @@ mini_demo/
 claude_plan/
 
 .eval_tmp_folder/
+
+logs/
