@@ -63,7 +63,7 @@ python -m beamformer.cdf_plot
 The full training dataset is publicly available:
 
 - **IEEE DataPort**: [10.21227/g1zj-z323](https://ieee-dataport.org/documents/beamformer-ray-tracing-channel-dataset)
-- **S3**: `https://s3-west.nrp-nautilus.io/BeamFormer/dataset/homeoffice-communication-28G-raw-data.zip`
+- **S3**: [Nautilus Ceph Storage](https://s3-west.nrp-nautilus.io/BeamFormer/dataset/homeoffice-communication-28G-raw-data.zip)
 - **Data processing code**: [github.com/Shunqiang-Feng/BeamFormer-Dataset](https://github.com/Shunqiang-Feng/BeamFormer-Dataset)
 
 ---
