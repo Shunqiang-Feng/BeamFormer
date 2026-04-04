@@ -70,6 +70,18 @@ The full training dataset is publicly available:
 
 ## Training Your Own Model
 
+### Prepare the Dataset
+
+First, download the open-source raw dataset (see the [Dataset](#dataset) section above). This is a raw channel database, not ready-to-use CSI. Next, use the data processing code at [github.com/Shunqiang-Feng/BeamFormer-Dataset](https://github.com/Shunqiang-Feng/BeamFormer-Dataset) to generate the CSI dataset: edit `config.m` to match your antenna configuration and operating frequency, then run `main.m`.
+
+**A note on frequency generalization:** Although the dataset is simulated at 28 GHz, the trained model transfers directly to other frequencies — no retraining required. The key is to ensure the normalized antenna spacing is consistent between simulation and deployment, i.e.:
+
+$$\frac{d_\text{sim}}{\lambda_\text{sim}} = \frac{d_\text{real}}{\lambda_\text{real}}$$
+
+where $d_\text{real}$ and $\lambda_\text{real}$ are the physical antenna spacing and wavelength of your real array, and $d_\text{sim}$ and $\lambda_\text{sim}$ are the corresponding values used in the simulation (at 27.925 GHz). To satisfy this, set the simulation spacing to:
+
+$$d_\text{sim} = d_\text{real} \cdot \frac{\lambda_\text{sim}}{\lambda_\text{real}}$$
+
 ### Configuration
 
 Edit the config files in [`configs/`](configs/) to match your hardware and dataset paths:
