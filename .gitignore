@@ -1,0 +1,90 @@
+*saved_models/
+
+csi-dataset/
+
+*.tar.gz
+
+ae_figures/
+
+test.sh
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+.env
+.venv
+env/
+venv/
+ENV/
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Docker
+*.tar
+*.sif
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+*.out
+
+# Local data/cache
+*.cache
+.cache/
+
+# dataset-related
+csi_data
+
+# scene related
+scene/
+notebooks/
+
+*.ipynb
+
+eval_results/
+figures/
+
+cache/
+
+realworld_figures*/
+
+.eval_tmp_folder/
+
+claude_plan/
+
+claude_plan_legacy/
+
+ae_necessary/
+ae_necessary.zip
