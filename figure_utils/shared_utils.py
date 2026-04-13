@@ -7,6 +7,9 @@ import os
 from matplotlib.font_manager import FontProperties
 from itertools import cycle
 import sys
+import matplotlib
+matplotlib.rcParams['pdf.fonttype'] = 42
+matplotlib.rcParams['ps.fonttype'] = 42
 
 # Add project root to path so imports from the project root work correctly
 _PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

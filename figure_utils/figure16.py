@@ -16,6 +16,9 @@ import matplotlib.pyplot as plt
 import matplotlib as mpl
 import pandas as pd
 
+matplotlib.rcParams['pdf.fonttype'] = 42
+matplotlib.rcParams['ps.fonttype'] = 42
+
 REQUIRED_CONFIGS = []  # special case - uses CSV files
 
 _CSV_DIR = os.path.join(_PROJECT_ROOT, "eval_results", "running_time_comparison", "cached")
