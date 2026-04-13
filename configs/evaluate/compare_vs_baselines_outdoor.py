@@ -9,7 +9,7 @@ request = SimpleNamespace(
     phase_constraint = False, 
     results_folder = f"./.eval_tmp_folder/{config_name}",
     figures = 10,
-    batch_size = 100, # batch size for evaluation
+    batch_size = 10, # batch size for evaluation
     test_batch_length = 1000, # if None, use all the test dataset
 )
 
