@@ -8,7 +8,7 @@ if _PROJECT_ROOT not in sys.path:
 import torch
 import torch.nn as nn
 import torch.nn.init as init
-from perceiver_pytorch import PerceiverIO
+from perceiver_io import PerceiverIO
 import pandas as pd
 import numpy as np
 import time
