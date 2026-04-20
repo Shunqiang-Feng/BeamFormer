@@ -48,16 +48,16 @@ def _combine_dict_arrays(dict1, dict2):
 
 
 def _add_angle_error(data_dict):
-    """Add angle_error column to 'Our Method' DataFrame."""
-    key_name = 'Our Method'
-    if key_name in data_dict:
-        df = data_dict[key_name].copy()
-        df['angle_error'] = calculate_angle_error(
-            df['gt_phi'], df['gt_theta'],
-            df['pred_phi'], df['pred_theta']
-        )
-        data_dict = dict(data_dict)
-        data_dict[key_name] = df
+    """Add angle_error column to any DataFrame that has pred_phi/pred_theta but no angle_error."""
+    data_dict = dict(data_dict)
+    for key, df in data_dict.items():
+        if 'angle_error' not in df.columns and {'pred_phi', 'pred_theta', 'gt_phi', 'gt_theta'}.issubset(df.columns):
+            df = df.copy()
+            df['angle_error'] = calculate_angle_error(
+                df['gt_phi'], df['gt_theta'],
+                df['pred_phi'], df['pred_theta']
+            )
+            data_dict[key] = df
     return data_dict
 
 
