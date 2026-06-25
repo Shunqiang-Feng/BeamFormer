@@ -2,7 +2,7 @@
 
 > **BeamFormer** is a transformer-based framework for beam management in gMIMO 6G networks. It reconstructs the full beam spectrum (RSS across all beam directions) from a small number of reference beam measurements, achieving real-time beam alignment with 1.8 ms inference latency for 1,600 beams.
 
-Paper: *BeamFormer: Transformer-based Beam Management for 6G Networks*, MobiSys 2026 (link TBD)
+Paper: *BeamFormer: Transformer-based Beam Management for 6G Networks*, MobiSys 2026 ([link](https://dl.acm.org/doi/10.1145/3745756.3809229))
 
 ---
 
