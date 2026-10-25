@@ -102,7 +102,8 @@ def calculate_antenna_factor_vector(M, N, weights, d_row, d_col, lambda_, theta_
     X, Y = torch.meshgrid(x, y, indexing='xy')
 
     theta = torch.linspace(0, np.pi * theta_max / 180, theta_steps, device=device)
-    phi = torch.linspace(0, 2 * np.pi, phi_steps, device=device)
+    # Sample the periodic azimuth grid without duplicating 0 at 2*pi.
+    phi = torch.arange(phi_steps, device=device) * (2 * np.pi / phi_steps)
     theta, phi = torch.meshgrid(theta, phi, indexing='ij')  # (theta_steps, phi_steps)
 
     kx = k * torch.sin(theta) * torch.cos(phi)

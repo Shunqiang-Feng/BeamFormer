@@ -98,7 +98,8 @@ class data_process_4_weight_generator():
         phi_indices = max_indices // theta_steps   
         
         phi_degrees = phi_indices.float() * (360.0 / phi_steps) 
-        theta_degrees = theta_indices.float() * (self.antenna_info.max_theta / theta_steps)  
+        # generate_angles includes both endpoints of the theta interval.
+        theta_degrees = theta_indices.float() * (self.antenna_info.max_theta / (theta_steps - 1))
         
         angle_spectrum = rss.view(batch_size, phi_steps, theta_steps)
         
